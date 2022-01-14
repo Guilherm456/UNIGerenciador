@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:uni_gerenciador/app_widget.dart';
+import 'package:uni_gerenciador/widgets/app_widget.dart';
 
 import 'package:uni_gerenciador/main.dart';
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:uni_gerenciador/drawer_widget.dart';
+import 'package:uni_gerenciador/widgets/FAB.dart';
+import 'package:uni_gerenciador/widgets/drawer_widget.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return HomePageState();
@@ -19,10 +22,7 @@ class HomePageState extends State<HomePage> {
         actions: [],
       ),
       drawer: DrawerMenu(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const FAB(),
       body: SafeArea(
           child: SizedBox(
         width: double.infinity,
