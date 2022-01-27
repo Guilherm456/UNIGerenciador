@@ -17,7 +17,7 @@ class FABState extends State<FAB> {
     return FloatingActionButton(
       onPressed: () {
         _isOpened = !_isOpened;
-        Navigator.of(context).pushNamed('/addtask');
+        Navigator.of(context).pushNamed('/addspending');
       },
       child: const Icon(Icons.add),
     );

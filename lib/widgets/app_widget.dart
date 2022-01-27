@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/pages/add_spending.dart';
 
 import '../pages/add_task.dart';
 import '../pages/home_page.dart';
@@ -20,6 +21,8 @@ class Paleta {
 }
 
 class AppWidget extends StatelessWidget {
+  const AppWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -31,8 +34,9 @@ class AppWidget extends StatelessWidget {
             ),
             initialRoute: '/',
             routes: {
-              '/': (context) => HomePage(),
-              '/addtask': (context) => AddTaskPage(),
+              '/': (context) => const HomePage(),
+              '/addtask': (context) => const AddTaskPage(),
+              '/addspending': (context) => const AddSpendingPage(),
             },
           );
         });

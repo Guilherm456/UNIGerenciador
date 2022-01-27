@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni_gerenciador/widgets/FAB.dart';
+import 'package:uni_gerenciador/widgets/fab.dart';
 import 'package:uni_gerenciador/widgets/drawer_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,9 +19,9 @@ class HomePageState extends State<HomePage> {
       key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Página inicial'),
-        actions: [],
+        // actions: [],
       ),
-      drawer: DrawerMenu(),
+      drawer: const DrawerMenu(),
       floatingActionButton: const FAB(),
       body: SafeArea(
           child: SizedBox(
@@ -40,7 +40,7 @@ class HomePageState extends State<HomePage> {
               textAlign: TextAlign.start,
             ),
             ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 350),
+              constraints: const BoxConstraints(maxHeight: 350),
               child: Scrollbar(
                 child: ListView(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
