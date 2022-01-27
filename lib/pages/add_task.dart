@@ -15,8 +15,7 @@ class AddTaskPageState extends State<AddTaskPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    Task task = Task();
-
+    Task task = Task(date: DateTime.now(), name: '', description: '');
     final _form = GlobalKey<FormState>();
 
     return Scaffold(
