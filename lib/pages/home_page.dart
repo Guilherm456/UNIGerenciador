@@ -29,14 +29,16 @@ class HomePageState extends State<HomePage> {
         height: double.infinity,
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: Text("Olá, Guilherme!", style: TextStyle(fontSize: 30)),
+            Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Text("Olá, Guilherme!",
+                  style: Theme.of(context).textTheme.headline4),
             ),
 
             //Exibe as principais tarefas
-            const Text(
+            Text(
               "Tarefas",
+              style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.start,
             ),
             ConstrainedBox(
@@ -64,8 +66,9 @@ class HomePageState extends State<HomePage> {
               ),
             ),
             const Divider(),
-            const Text(
+            Text(
               "Gastos",
+              style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.start,
             ),
             const Card(

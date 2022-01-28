@@ -16,22 +16,32 @@ class DrawerMenuState extends State<DrawerMenu> {
         child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        const DrawerHeader(
-          decoration: BoxDecoration(
-              // color: Theme.of(context).colorScheme.onPrimary,
-              ),
-          child: Text('Menu'),
+        // const DrawerHeader(
+        //   decoration: BoxDecoration(
+        //       // color: Theme.of(context).colorScheme.onPrimary,
+        //       ),
+        //   child: Text('Menu'),
+        // ),
+        ListTile(
+          title: const Text("Página inicial"),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.of(context).pushNamed('/');
+          },
         ),
+        const Divider(),
         ListTile(
           title: const Text('Tarefas'),
           onTap: () {
             Navigator.pop(context);
+            Navigator.of(context).pushNamed('/tasks');
           },
         ),
         ListTile(
           title: const Text('Gastos'),
           onTap: () {
             Navigator.pop(context);
+            // Navigator.of(context).pushNamed('/expenses');
           },
         ),
       ],

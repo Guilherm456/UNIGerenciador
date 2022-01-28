@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_gerenciador/pages/add_spending.dart';
+import 'package:uni_gerenciador/pages/tasks.dart';
 
 import '../pages/add_task.dart';
 import '../pages/home_page.dart';
@@ -37,6 +38,7 @@ class AppWidget extends StatelessWidget {
               '/': (context) => const HomePage(),
               '/addtask': (context) => const AddTaskPage(),
               '/addspending': (context) => const AddSpendingPage(),
+              '/tasks': (context) => const TaskPage(),
             },
           );
         });

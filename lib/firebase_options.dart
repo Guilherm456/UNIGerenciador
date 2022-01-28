@@ -61,7 +61,8 @@ class DefaultFirebaseOptions {
     projectId: 'unigerenciador-c9bea',
     databaseURL: 'https://unigerenciador-c9bea-default-rtdb.firebaseio.com',
     storageBucket: 'unigerenciador-c9bea.appspot.com',
-    iosClientId: '983132221268-p13nqdlsgsusr1tqkb03duvhs1gblau9.apps.googleusercontent.com',
+    iosClientId:
+        '983132221268-p13nqdlsgsusr1tqkb03duvhs1gblau9.apps.googleusercontent.com',
     iosBundleId: 'com.unigerenciador.app',
   );
 
@@ -72,7 +73,8 @@ class DefaultFirebaseOptions {
     projectId: 'unigerenciador-c9bea',
     databaseURL: 'https://unigerenciador-c9bea-default-rtdb.firebaseio.com',
     storageBucket: 'unigerenciador-c9bea.appspot.com',
-    iosClientId: '983132221268-p13nqdlsgsusr1tqkb03duvhs1gblau9.apps.googleusercontent.com',
+    iosClientId:
+        '983132221268-p13nqdlsgsusr1tqkb03duvhs1gblau9.apps.googleusercontent.com',
     iosBundleId: 'com.unigerenciador.app',
   );
 }
