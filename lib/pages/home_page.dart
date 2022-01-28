@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni_gerenciador/widgets/fab.dart';
+import 'package:uni_gerenciador/widgets/fab_widget.dart';
 import 'package:uni_gerenciador/widgets/drawer_widget.dart';
 
 class HomePage extends StatefulWidget {
