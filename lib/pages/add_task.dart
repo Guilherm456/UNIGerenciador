@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
@@ -12,6 +13,8 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class AddTaskPageState extends State<AddTaskPage> {
+  DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -60,7 +63,23 @@ class AddTaskPageState extends State<AddTaskPage> {
                   onPressed: () {
                     if (_form.currentState!.validate()) {
                       _form.currentState!.save();
-                      Navigator.of(context).pop();
+                      ref
+                          .push()
+                          .set({
+                            'name': task.name,
+                            'description': task.description,
+                            'date': task.date.toString(),
+                            'isDone': false
+                          })
+                          .then((value) => Navigator.of(context).pop())
+                          .catchError((error) {
+                            const snackBar = SnackBar(
+                              content: Text('Erro ao adicionar tarefa'),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          });
                     }
                   },
                   child: const Text('Adicionar tarefa'),
