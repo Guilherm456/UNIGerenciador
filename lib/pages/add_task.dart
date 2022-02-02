@@ -65,21 +65,15 @@ class AddTaskPageState extends State<AddTaskPage> {
                       _form.currentState!.save();
                       ref
                           .push()
-                          .set({
-                            'name': task.name,
-                            'description': task.description,
-                            'date': task.date.toString(),
-                            'isDone': false
-                          })
+                          .set(task.toJSon())
                           .then((value) => Navigator.of(context).pop())
                           .catchError((error) {
-                            const snackBar = SnackBar(
-                              content: Text('Erro ao adicionar tarefa'),
-                              behavior: SnackBarBehavior.floating,
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          });
+                        const snackBar = SnackBar(
+                          content: Text('Erro ao adicionar tarefa'),
+                          behavior: SnackBarBehavior.floating,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      });
                     }
                   },
                   child: const Text('Adicionar tarefa'),

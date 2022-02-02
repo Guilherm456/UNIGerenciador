@@ -33,6 +33,7 @@ class AppWidget extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Paleta.colorDefault,
             ),
+            title: 'Uni Gerenciador',
             initialRoute: '/',
             routes: {
               '/': (context) => const HomePage(),

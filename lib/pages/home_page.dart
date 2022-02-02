@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/fab_widget.dart';
 import 'package:uni_gerenciador/widgets/drawer_widget.dart';
 
@@ -14,19 +15,22 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  // List<Task> tasks = <Task>[];
+  List<Task> tasks = [];
 
   Future<void> getData() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
     // Query query = ref.orderByChild('date').orderByValue();
     DatabaseEvent snap = await ref.once();
-
-    // Map list = (snap.snapshot.value as Map<dynamic, dynamic>)
-    //     .map((key, value) => MapEntry(key, value));
-    // return snapshot;
+    Map<String, dynamic> data = snap.snapshot.value as Map<String, dynamic>;
+    data.forEach((key, value) {
+      tasks.add(Task.fromJSON(value));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    getData();
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
