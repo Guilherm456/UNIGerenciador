@@ -26,11 +26,11 @@ class HomePageState extends State<HomePage> {
     data.forEach((key, value) {
       tasks.add(Task.fromJSON(value));
     });
+    tasks.sort((a, b) => a.date.compareTo(b.date));
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -59,27 +59,41 @@ class HomePageState extends State<HomePage> {
             ),
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 350),
-              child: Scrollbar(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: const [
-                    ListTile(
-                      // leading: ExcludeSemantics(
-                      //     child: CircleAvatar(
-                      //   backgroundColor: Colors.grey,
-                      // )),
-                      title: Text('Tarefa 1'),
-                      subtitle: Text(
-                        '24/12/2021',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      trailing: Icon(Icons.task_alt),
-                    ),
-                  ],
-                ),
-              ),
+              child: FutureBuilder(
+                  future: getData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Center(child: CircularProgressIndicator());
+                      default:
+                        return ListView(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: tasks
+                              .map((task) => ListTile(
+                                    title: Text(task.name),
+                                    subtitle: Text(task.date.toString()),
+                                    trailing: const Icon(Icons.task_alt),
+                                    iconColor: (() {
+                                      if (task.isDone!) {
+                                        return Colors.black38;
+                                      } else {
+                                        if (task.date
+                                            .isBefore(DateTime.now())) {
+                                          return Colors.red;
+                                        }
+                                        return Colors.green;
+                                      }
+                                    }()),
+                                  ))
+                              .toList(growable: false),
+                        );
+                    }
+                  }),
             ),
             const Divider(),
             Text(
