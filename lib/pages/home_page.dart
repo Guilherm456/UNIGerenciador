@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/pages/edit_task.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/fab_widget.dart';
 import 'package:uni_gerenciador/widgets/drawer_widget.dart';
@@ -19,14 +20,18 @@ class HomePageState extends State<HomePage> {
   List<Task> tasks = [];
 
   Future<void> getData() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
-    // Query query = ref.orderByChild('date').orderByValue();
-    DatabaseEvent snap = await ref.once();
-    Map<String, dynamic> data = snap.snapshot.value as Map<String, dynamic>;
-    data.forEach((key, value) {
-      tasks.add(Task.fromJSON(value));
-    });
-    tasks.sort((a, b) => a.date.compareTo(b.date));
+    try {
+      DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
+      // Query query = ref.orderByChild('date').orderByValue();
+      DatabaseEvent snap = await ref.once();
+      Map<String, dynamic> data = snap.snapshot.value as Map<String, dynamic>;
+      data.forEach((key, value) {
+        tasks.add(Task.fromJSON(value, key));
+      });
+      tasks.sort((a, b) => a.date.compareTo(b.date));
+    } catch (e) {
+      //print(e);
+    }
   }
 
   @override
@@ -89,6 +94,13 @@ class HomePageState extends State<HomePage> {
                                         return Colors.green;
                                       }
                                     }()),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditTaskPage(task: task)));
+                                    },
                                   ))
                               .toList(growable: false),
                         );

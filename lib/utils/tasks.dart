@@ -12,12 +12,13 @@ class Task {
       this.isDone = false,
       this.id = ''});
 
-  factory Task.fromJSON(dynamic data) {
+  factory Task.fromJSON(dynamic data, String id) {
     return Task(
       name: data['name'],
       description: data['description'],
       date: DateTime.parse(data['date']),
       isDone: data['isDone'],
+      id: id,
     );
   }
 
@@ -29,11 +30,4 @@ class Task {
       'isDone': isDone
     };
   }
-}
-
-class Teste {
-  String name = '';
-  String description = '';
-  String date = '';
-  bool isDone = false;
 }
