@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
 
 class AddSpendingPage extends StatefulWidget {
   const AddSpendingPage({Key? key}) : super(key: key);
@@ -89,6 +90,10 @@ class AddSpendingState extends State<AddSpendingPage> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(height: 32.0),
+                DatePicker(
+                  initialDay: DateTime.now().subtract(const Duration(days: 30)),
                 ),
                 const SizedBox(height: 32.0),
                 ElevatedButton(

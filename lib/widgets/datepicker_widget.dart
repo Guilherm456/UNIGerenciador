@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DatePicker extends StatefulWidget {
-  const DatePicker({Key? key, this.initialValue}) : super(key: key);
+  const DatePicker({Key? key, this.initialValue, this.initialDay})
+      : super(key: key);
   final DateTime? initialValue;
+  final DateTime? initialDay;
 
   @override
   State<StatefulWidget> createState() {
@@ -11,23 +14,33 @@ class DatePicker extends StatefulWidget {
 }
 
 class DatePickerState extends State<DatePicker> {
+  DateFormat formatador = DateFormat('dd/MM/yyyy');
   final TextEditingController _dateController = TextEditingController();
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
 
   _selectedDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: widget.initialValue ?? selectedDate,
-        firstDate: widget.initialValue ?? DateTime.now(),
-        lastDate: DateTime(DateTime.now().year + 50));
+      context: context,
+      initialDate: selectedDate,
+      firstDate: widget.initialDay ?? selectedDate,
+      lastDate: DateTime(DateTime.now().year + 50),
+    );
 
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        var date =
-            "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
-        _dateController.text = date;
+
+        _dateController.text = formatador.format(selectedDate);
       });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      selectedDate = widget.initialValue!;
+      _dateController.text = formatador.format(selectedDate);
     }
   }
 

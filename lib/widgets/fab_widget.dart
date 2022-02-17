@@ -59,6 +59,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
         Navigator.of(context).pushNamed('/addtask');
       },
       tooltip: 'Adicionar tarefa',
+      heroTag: "task",
       child: const Icon(Icons.add_task),
     );
   }
@@ -69,6 +70,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
         Navigator.of(context).pushNamed('/addspending');
       },
       tooltip: 'Adicionar despesa',
+      heroTag: "spending",
       child: const Icon(Icons.add_shopping_cart),
     );
   }
@@ -77,6 +79,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
     return FloatingActionButton(
       onPressed: animate,
       tooltip: "Adicionar evento",
+      heroTag: "event",
       child: Icon(_isOpened ? Icons.close : Icons.add),
     );
   }

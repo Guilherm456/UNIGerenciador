@@ -33,6 +33,8 @@ class AppWidget extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Paleta.colorDefault,
             ),
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.system,
             title: 'Uni Gerenciador',
             initialRoute: '/',
             routes: {
@@ -41,6 +43,7 @@ class AppWidget extends StatelessWidget {
               '/addspending': (context) => const AddSpendingPage(),
               '/tasks': (context) => const TaskPage(),
             },
+            locale: const Locale('pt', 'BR'),
           );
         });
   }
