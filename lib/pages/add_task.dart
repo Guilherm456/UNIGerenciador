@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/notification.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
 
@@ -7,9 +8,7 @@ class AddTaskPage extends StatefulWidget {
   const AddTaskPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return AddTaskPageState();
-  }
+  State<StatefulWidget> createState() => AddTaskPageState();
 }
 
 class AddTaskPageState extends State<AddTaskPage> {
@@ -20,7 +19,6 @@ class AddTaskPageState extends State<AddTaskPage> {
   Widget build(BuildContext context) {
     Task task = Task(date: DateTime.now(), name: '', description: '');
     final _form = GlobalKey<FormState>();
-
     return Scaffold(
       appBar: AppBar(title: const Text('Adicionar tarefa')),
       body: SafeArea(
@@ -45,7 +43,8 @@ class AddTaskPageState extends State<AddTaskPage> {
                     }
                     return null;
                   },
-                  // onSaved: (val) => task.name= val,
+                  keyboardType: TextInputType.text,
+                  autofocus: true,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -57,17 +56,16 @@ class AddTaskPageState extends State<AddTaskPage> {
                   maxLength: 250,
                   keyboardType: TextInputType.multiline,
                 ),
-                const DatePicker(),
+                DatePicker(onSaved: (val) => task.date = val),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () {
                     if (_form.currentState!.validate()) {
                       _form.currentState!.save();
-                      ref
-                          .push()
-                          .set(task.toJSon())
-                          .then((value) => Navigator.of(context).pop())
-                          .catchError((error) {
+                      ref.push().set(task.toJSon()).then((value) {
+                        NotificationService().scheduleNotifications(task);
+                        Navigator.of(context).pop();
+                      }).catchError((error) {
                         const snackBar = SnackBar(
                           content: Text('Erro ao adicionar tarefa'),
                           behavior: SnackBarBehavior.floating,

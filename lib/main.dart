@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/notification.dart';
 import 'package:uni_gerenciador/widgets/app_widget.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -9,5 +10,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await NotificationService().init();
   runApp(const AppWidget());
 }

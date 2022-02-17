@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/notification.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
 
@@ -38,6 +39,7 @@ class EditTaskPageState extends State<EditTaskPage> {
           'date': task.date.toIso8601String(),
           'isDone': task.isDone,
         });
+        NotificationService().changeANotification(task);
       } catch (e) {
         // print(e);
       }
@@ -140,8 +142,7 @@ class EditTaskPageState extends State<EditTaskPage> {
                   keyboardType: TextInputType.multiline,
                 ),
                 DatePicker(
-                  initialValue: task.date,
-                ),
+                    initialValue: task.date, onSaved: (val) => task.date = val),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () {
