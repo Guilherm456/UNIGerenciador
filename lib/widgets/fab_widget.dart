@@ -56,6 +56,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
   Widget task() {
     return FloatingActionButton(
       onPressed: () {
+        animate();
         Navigator.of(context).pushNamed('/addtask');
       },
       tooltip: 'Adicionar tarefa',
@@ -67,6 +68,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
   Widget spending() {
     return FloatingActionButton(
       onPressed: () {
+        animate();
         Navigator.of(context).pushNamed('/addspending');
       },
       tooltip: 'Adicionar despesa',

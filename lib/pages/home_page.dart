@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -54,6 +55,118 @@ class HomePageState extends State<HomePage> {
   DateFormat formatador = DateFormat('dd/MM/yyyy');
 
   @override
+  void initState() {
+    super.initState();
+
+    //Vai marcar a tarefa como feita no BD
+    AwesomeNotifications()
+        .actionStream
+        .listen((ReceivedNotification notification) {
+      if (notification.payload == null) return;
+      if (notification.payload!.containsKey('taskId')) {
+        String? id = notification.payload!['taskId'];
+        DatabaseReference ref =
+            FirebaseDatabase.instance.ref('tasks').child(id!);
+        ref.update({'isDone': true});
+      }
+    });
+
+    //Permite permissão para exibir notificações
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Text('Permita notificações para o aplicativo'),
+                  content: const Text(
+                      'Para que o aplicativo funcione corretamente, você precisa permitir notificações'),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancelar',
+                            style: TextStyle(color: Colors.grey))),
+                    TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        AwesomeNotifications()
+                            .requestPermissionToSendNotifications();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ));
+      }
+    });
+  }
+
+  Widget listTask() {
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      children: tasks
+          .map((task) => Dismissible(
+              key: ValueKey<String>(task.id!),
+              background: Container(
+                color: Colors.green,
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.delete, color: Colors.white),
+                      Text('Marcar como concluída',
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
+              ),
+              secondaryBackground: Container(
+                color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: const [
+                      Icon(Icons.delete, color: Colors.white),
+                      Text('Deletar tarefa',
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
+              ),
+              onDismissed: (direction) {
+                //da esquerda para direita
+                if (direction == DismissDirection.startToEnd) {
+                }
+                //da direita para esquerda
+                else {}
+              },
+              child: ListTile(
+                title: Text(task.name),
+                subtitle: Text(formatador.format(task.date)),
+                trailing: const Icon(Icons.task_alt),
+                iconColor: (() {
+                  if (task.isDone!) {
+                    return Colors.black38;
+                  } else {
+                    if (task.date.isBefore(DateTime.now())) {
+                      return Colors.red;
+                    }
+                    return Colors.green;
+                  }
+                }()),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditTaskPage(task: task)));
+                },
+              )))
+          .toList(growable: false),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
@@ -92,37 +205,7 @@ class HomePageState extends State<HomePage> {
                       case ConnectionState.waiting:
                         return const Center(child: CircularProgressIndicator());
                       default:
-                        return ListView(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: tasks
-                              .map((task) => ListTile(
-                                    title: Text(task.name),
-                                    subtitle:
-                                        Text(formatador.format(task.date)),
-                                    trailing: const Icon(Icons.task_alt),
-                                    iconColor: (() {
-                                      if (task.isDone!) {
-                                        return Colors.black38;
-                                      } else {
-                                        if (task.date
-                                            .isBefore(DateTime.now())) {
-                                          return Colors.red;
-                                        }
-                                        return Colors.green;
-                                      }
-                                    }()),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditTaskPage(task: task)));
-                                    },
-                                  ))
-                              .toList(growable: false),
-                        );
+                        return listTask();
                     }
                   }),
             ),
