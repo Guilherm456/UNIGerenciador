@@ -47,6 +47,11 @@ class EditTaskPageState extends State<EditTaskPage> {
     }
 
     Future<void> markDone() async {
+      if (task.isDone == true) {
+        const snackBar = SnackBar(content: Text('Tarefa já está concluída!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
       try {
         await ref.update({
           'isDone': true,

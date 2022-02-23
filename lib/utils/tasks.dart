@@ -1,6 +1,6 @@
 class Task {
   String name;
-  String description;
+  String? description;
   DateTime date;
   bool? isDone;
   String? id;
@@ -10,7 +10,7 @@ class Task {
       this.description = '',
       required this.date,
       this.isDone = false,
-      this.id = ''});
+      this.id});
 
   factory Task.fromJSON(dynamic data, String id) {
     return Task(
