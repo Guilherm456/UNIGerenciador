@@ -1,10 +1,12 @@
-import 'dart:convert';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
+import 'dart:convert';
 import 'package:intl/intl.dart';
 
 import 'package:uni_gerenciador/pages/edit_task.dart';
+import 'package:uni_gerenciador/utils/speding.dart';
 
 import 'package:uni_gerenciador/utils/tasks.dart';
 
@@ -21,8 +23,9 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Task> tasks = [];
+  List<Spending> spendings = [];
 
-  Future<void> getData() async {
+  Future<void> getTasks() async {
     try {
       if (tasks.isNotEmpty) return;
       DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
@@ -52,13 +55,35 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> getSpending() async {
+    try {
+      if (spendings.isNotEmpty) return;
+      DateTime today = DateTime.now();
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref('spending')
+          .child('${today.year}')
+          .child('${today.month}');
+      DatabaseEvent snap = await ref.once();
+
+      if (snap.snapshot.value == null) return;
+      Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
+      data.forEach((key, value) {
+        spendings.add(Spending.fromJSON(value, key));
+      });
+
+      spendings.sort((a, b) => a.date.compareTo(b.date));
+    } catch (e) {
+      // print('Algum erro ocorreu');
+    }
+  }
+
   DateFormat formatador = DateFormat('dd/MM/yyyy');
 
   @override
   void initState() {
     super.initState();
 
-    //Vai marcar a tarefa como feita no BD
+    //Vai marcar a tarefa como feita no BD a partir da notificação
     AwesomeNotifications()
         .actionStream
         .listen((ReceivedNotification notification) {
@@ -99,86 +124,29 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  Widget listTask() {
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      children: tasks
-          .map((task) => Dismissible(
-              key: ValueKey<String>(task.id!),
-              background: Container(
-                color: Colors.green,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.delete, color: Colors.white),
-                      Text('Marcar como concluída',
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-              ),
-              secondaryBackground: Container(
-                color: Colors.red,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      Icon(Icons.delete, color: Colors.white),
-                      Text('Deletar tarefa',
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-              ),
-              onDismissed: (direction) {
-                //da esquerda para direita
-                if (direction == DismissDirection.startToEnd) {
-                }
-                //da direita para esquerda
-                else {}
-              },
-              child: ListTile(
-                title: Text(task.name),
-                subtitle: Text(formatador.format(task.date)),
-                trailing: const Icon(Icons.task_alt),
-                iconColor: (() {
-                  if (task.isDone!) {
-                    return Colors.black38;
-                  } else {
-                    if (task.date.isBefore(DateTime.now())) {
-                      return Colors.red;
-                    }
-                    return Colors.green;
-                  }
-                }()),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditTaskPage(task: task)));
-                },
-              )))
-          .toList(growable: false),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Página inicial'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  tasks = [];
+                  spendings = [];
+                });
+              },
+              icon: const Icon(Icons.refresh)),
+        ],
       ),
       drawer: const DrawerMenu(),
       floatingActionButton: const FAB(),
       body: SafeArea(
           child: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
             Padding(
@@ -196,7 +164,7 @@ class HomePageState extends State<HomePage> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 350),
               child: FutureBuilder(
-                  future: getData(),
+                  future: getTasks(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -215,13 +183,123 @@ class HomePageState extends State<HomePage> {
               style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.start,
             ),
-            const Card(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              elevation: 1,
-            ),
+            ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 350),
+                child: FutureBuilder(
+                  future: getSpending(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Center(child: CircularProgressIndicator());
+                      default:
+                        return spendingShow();
+                    }
+                  },
+                ))
           ],
         ),
       )),
     );
+  }
+
+  Widget listTask() {
+    if (tasks.isNotEmpty) {
+      return ListView(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        children: tasks
+            .map((task) => Dismissible(
+                key: ValueKey<String>(task.id!),
+                background: Container(
+                  color: Colors.green,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.delete, color: Colors.white),
+                        Text('Marcar como concluída',
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+                secondaryBackground: Container(
+                  color: Colors.red,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Icon(Icons.delete, color: Colors.white),
+                        Text('Deletar tarefa',
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+                onDismissed: (direction) {
+                  //da esquerda para direita
+                  if (direction == DismissDirection.startToEnd) {
+                  }
+                  //da direita para esquerda
+                  else {}
+                },
+                child: ListTile(
+                  title: Text(task.name),
+                  subtitle: Text(formatador.format(task.date)),
+                  trailing: const Icon(Icons.task_alt),
+                  iconColor: (() {
+                    if (task.isDone!) {
+                      return Colors.black38;
+                    } else {
+                      if (task.date.isBefore(DateTime.now())) {
+                        return Colors.red;
+                      }
+                      return Colors.green;
+                    }
+                  }()),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditTaskPage(task: task)));
+                  },
+                )))
+            .toList(growable: false),
+      );
+    } else {
+      return const Padding(
+          padding: EdgeInsets.all(16),
+          child: Text('Nenhuma tarefa cadastrada',
+              style: TextStyle(color: Colors.grey)));
+    }
+  }
+
+  Widget spendingShow() {
+    spendings.sort((a, b) => b.date.compareTo(a.date));
+    if (spendings.isNotEmpty) {
+      return ListView(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        children: spendings
+            .map((spending) => ListTile(
+                  title: Text(spending.name ?? 'Sem nome'),
+                  subtitle: Text(formatador.format(spending.date)),
+                  trailing: Icon(
+                    Icons.monetization_on,
+                    color: spending.isIncome ? Colors.green : Colors.red,
+                  ),
+                ))
+            .toList(growable: false),
+      );
+    } else {
+      return const Padding(
+          padding: EdgeInsets.all(16),
+          child: Text('Nenhum gasto cadastrado',
+              style: TextStyle(color: Colors.grey)));
+    }
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uni_gerenciador/pages/add_spending.dart';
+import 'package:uni_gerenciador/pages/add_task.dart';
+import 'package:uni_gerenciador/pages/expenses.dart';
+import 'package:uni_gerenciador/pages/home_page.dart';
 import 'package:uni_gerenciador/pages/tasks.dart';
-
-import '../pages/add_task.dart';
-import '../pages/home_page.dart';
 
 class Paleta {
   static const MaterialColor colorDefault =
@@ -42,6 +42,7 @@ class AppWidget extends StatelessWidget {
               '/addtask': (context) => const AddTaskPage(),
               '/addspending': (context) => const AddSpendingPage(),
               '/tasks': (context) => const TaskPage(),
+              '/expenses': (context) => const ExpensesPage(),
             },
             locale: const Locale('pt', 'BR'),
           );

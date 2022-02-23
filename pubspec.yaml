@@ -39,6 +39,8 @@ dependencies:
   path_provider: ^2.0.8
   intl: ^0.17.0
   awesome_notifications: ^0.6.21
+  currency_text_input_formatter: ^2.1.5
+  charts_flutter: ^0.12.0
 
 dev_dependencies:
   flutter_test:

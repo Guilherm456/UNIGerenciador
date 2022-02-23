@@ -3,10 +3,15 @@ import 'package:intl/intl.dart';
 
 class DatePicker extends StatefulWidget {
   const DatePicker(
-      {Key? key, this.initialValue, this.initialDay, required this.onSaved})
+      {Key? key,
+      this.initialValue,
+      this.initialDay,
+      required this.onSaved,
+      this.label})
       : super(key: key);
   final DateTime? initialValue;
   final DateTime? initialDay;
+  final String? label;
   final Function(DateTime value) onSaved;
 
   @override
@@ -52,15 +57,15 @@ class DatePickerState extends State<DatePicker> {
       onTap: () => _selectedDate(context),
       child: AbsorbPointer(
         child: TextFormField(
-          decoration: const InputDecoration(
-            labelText: 'Data para conclusão',
-            icon: Icon(Icons.calendar_today),
+          decoration: InputDecoration(
+            labelText: widget.label ?? 'Data para conclusão',
+            icon: const Icon(Icons.calendar_today),
           ),
           controller: _dateController,
           keyboardType: TextInputType.datetime,
           validator: (val) {
             if (val != null && val.isEmpty) {
-              return 'Digite a data de conclusão';
+              return 'Data necessária';
             }
             return null;
           },
