@@ -249,9 +249,44 @@ class HomePageState extends State<HomePage> {
                 onDismissed: (direction) {
                   //da esquerda para direita
                   if (direction == DismissDirection.startToEnd) {
+                    DatabaseReference ref =
+                        FirebaseDatabase.instance.ref('tasks').child(task.id!);
+                    ref.update({'isDone': true});
+                    setState(() {
+                      tasks.firstWhere((element) => element == task).isDone =
+                          true;
+                    });
                   }
                   //da direita para esquerda
-                  else {}
+                  else {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: const Text('Apagar tarefa'),
+                              content: const Text(
+                                  'Você tem certeza que deseja apagar esta tarefa?'),
+                              actions: [
+                                TextButton(
+                                  child: const Text('Cancelar'),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      DatabaseReference ref = FirebaseDatabase
+                                          .instance
+                                          .ref('tasks')
+                                          .child(task.id!);
+                                      ref.remove();
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Apagar',
+                                        style: TextStyle(color: Colors.red)))
+                              ],
+                            ));
+                    setState(() {
+                      tasks.remove(task);
+                    });
+                  }
                 },
                 child: ListTile(
                   title: Text(task.name),
