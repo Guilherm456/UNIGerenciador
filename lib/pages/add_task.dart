@@ -1,5 +1,5 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/database.dart';
 import 'package:uni_gerenciador/utils/notification.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
@@ -12,8 +12,6 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class AddTaskPageState extends State<AddTaskPage> {
-  DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -62,7 +60,7 @@ class AddTaskPageState extends State<AddTaskPage> {
                   onPressed: () {
                     if (_form.currentState!.validate()) {
                       _form.currentState!.save();
-                      ref.push().set(task.toJSon()).then((value) {
+                      DataBase().addTask(task).then((val) {
                         NotificationService().scheduleNotifications(task);
                         Navigator.of(context).pop();
                       }).catchError((error) {

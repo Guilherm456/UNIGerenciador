@@ -1,5 +1,5 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/database.dart';
 import 'package:uni_gerenciador/utils/notification.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
@@ -19,12 +19,10 @@ class EditTaskPageState extends State<EditTaskPage> {
     Task task = widget.task;
 
     final _form = GlobalKey<FormState>();
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref('tasks').child(task.id!);
 
     Future<void> deleteData() async {
       try {
-        await ref.remove();
+        await DataBase().deleteTask(task.id!);
       } catch (e) {
         // print(e);
       }
@@ -33,12 +31,7 @@ class EditTaskPageState extends State<EditTaskPage> {
 
     Future<void> updateData() async {
       try {
-        await ref.update({
-          'name': task.name,
-          'description': task.description,
-          'date': task.date.toIso8601String(),
-          'isDone': task.isDone,
-        });
+        await DataBase().updateTask(task);
         NotificationService().changeANotification(task);
       } catch (e) {
         // print(e);
@@ -53,9 +46,7 @@ class EditTaskPageState extends State<EditTaskPage> {
         return;
       }
       try {
-        await ref.update({
-          'isDone': true,
-        });
+        await DataBase().editAttribute(task.id, 'isDone', true);
       } catch (e) {
         // print(e);
       }

@@ -1,11 +1,11 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
 import 'package:uni_gerenciador/pages/edit_task.dart';
+import 'package:uni_gerenciador/utils/database.dart';
 import 'package:uni_gerenciador/utils/speding.dart';
 
 import 'package:uni_gerenciador/utils/tasks.dart';
@@ -28,14 +28,11 @@ class HomePageState extends State<HomePage> {
   Future<void> getTasks() async {
     try {
       if (tasks.isNotEmpty) return;
-      DatabaseReference ref = FirebaseDatabase.instance.ref('tasks');
-      DatabaseEvent snap = await ref.once();
-
-      Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
-
-      data.forEach((key, value) {
-        tasks.add(Task.fromJSON(value, key));
+      DataBase().getTasks().then((tasksBD) {
+        if (tasksBD == null) return;
+        tasks = tasksBD;
       });
+
       tasks.sort((a, b) => a.date.compareTo(b.date));
       tasks.sort((a, b) {
         if (a.isDone == true && b.isDone == false) {
@@ -58,20 +55,12 @@ class HomePageState extends State<HomePage> {
   Future<void> getSpending() async {
     try {
       if (spendings.isNotEmpty) return;
-      DateTime today = DateTime.now();
-      DatabaseReference ref = FirebaseDatabase.instance
-          .ref('spending')
-          .child('${today.year}')
-          .child('${today.month}');
-      DatabaseEvent snap = await ref.once();
 
-      if (snap.snapshot.value == null) return;
-      Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
-      data.forEach((key, value) {
-        spendings.add(Spending.fromJSON(value, key));
+      DataBase().getExpenses(DateTime.now()).then((value) {
+        if (value == null) return;
+        spendings = value;
+        spendings.sort((a, b) => a.date.compareTo(b.date));
       });
-
-      spendings.sort((a, b) => a.date.compareTo(b.date));
     } catch (e) {
       // print('Algum erro ocorreu');
     }
@@ -90,9 +79,8 @@ class HomePageState extends State<HomePage> {
       if (notification.payload == null) return;
       if (notification.payload!.containsKey('taskId')) {
         String? id = notification.payload!['taskId'];
-        DatabaseReference ref =
-            FirebaseDatabase.instance.ref('tasks').child(id!);
-        ref.update({'isDone': true});
+        if (id == null) return;
+        DataBase().editAttribute(id, "isDone", true);
       }
     });
 
@@ -147,59 +135,63 @@ class HomePageState extends State<HomePage> {
           child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Text("Olá, Guilherme!",
-                  style: Theme.of(context).textTheme.headline4),
-            ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Text("Olá, Guilherme!",
+                    style: Theme.of(context).textTheme.headline4),
+              ),
 
-            //Exibe as principais tarefas
-            Text(
-              "Tarefas",
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.start,
-            ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 350),
-              child: FutureBuilder(
-                  future: getTasks(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const Center(child: CircularProgressIndicator());
-                      default:
-                        return listTask();
-                    }
-                  }),
-            ),
-            const Divider(),
-            Text(
-              "Gastos",
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.start,
-            ),
-            ConstrainedBox(
+              //Exibe as principais tarefas
+              Text(
+                "Tarefas",
+                style: Theme.of(context).textTheme.subtitle1,
+                textAlign: TextAlign.start,
+              ),
+              ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 350),
                 child: FutureBuilder(
-                  future: getSpending(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const Center(child: CircularProgressIndicator());
-                      default:
-                        return spendingShow();
-                    }
-                  },
-                ))
-          ],
+                    future: getTasks(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        default:
+                          return listTask();
+                      }
+                    }),
+              ),
+              const Divider(),
+              Text(
+                "Gastos",
+                style: Theme.of(context).textTheme.subtitle1,
+                textAlign: TextAlign.start,
+              ),
+              ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 350),
+                  child: FutureBuilder(
+                    future: getSpending(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        default:
+                          return spendingShow();
+                      }
+                    },
+                  ))
+            ],
+          ),
         ),
       )),
     );
@@ -220,7 +212,7 @@ class HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(15),
                     child: Row(
                       children: const [
-                        Icon(Icons.delete, color: Colors.white),
+                        Icon(Icons.done, color: Colors.white),
                         Text('Marcar como concluída',
                             style: TextStyle(
                                 color: Colors.white,
@@ -249,9 +241,7 @@ class HomePageState extends State<HomePage> {
                 onDismissed: (direction) {
                   //da esquerda para direita
                   if (direction == DismissDirection.startToEnd) {
-                    DatabaseReference ref =
-                        FirebaseDatabase.instance.ref('tasks').child(task.id!);
-                    ref.update({'isDone': true});
+                    DataBase().editAttribute(task.id, "isDone", true);
                     setState(() {
                       tasks.firstWhere((element) => element == task).isDone =
                           true;
@@ -272,20 +262,17 @@ class HomePageState extends State<HomePage> {
                                 ),
                                 TextButton(
                                     onPressed: () {
-                                      DatabaseReference ref = FirebaseDatabase
-                                          .instance
-                                          .ref('tasks')
-                                          .child(task.id!);
-                                      ref.remove();
+                                      DataBase().deleteTask(task.id!);
+
+                                      setState(() {
+                                        tasks.remove(task);
+                                      });
                                       Navigator.pop(context);
                                     },
                                     child: const Text('Apagar',
                                         style: TextStyle(color: Colors.red)))
                               ],
                             ));
-                    setState(() {
-                      tasks.remove(task);
-                    });
                   }
                 },
                 child: ListTile(

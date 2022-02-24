@@ -1,9 +1,8 @@
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'dart:convert';
 import 'package:intl/intl.dart';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/database.dart';
 import 'package:uni_gerenciador/utils/speding.dart';
 
 class ExpensesPage extends StatefulWidget {
@@ -21,24 +20,14 @@ class ExpensesPageState extends State<ExpensesPage> {
   Future<void> getExpenses() async {
     if (spendings.isNotEmpty) return;
     try {
-      DateTime today = DateTime.now();
-      DatabaseReference ref = FirebaseDatabase.instance
-          .ref('spending')
-          .child('${today.year}')
-          .child('${today.month}');
-      DatabaseEvent snap = await ref.once();
-
-      if (snap.snapshot.value == null) return;
-      Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
-
-      data.forEach((key, value) {
-        spendings.add(Spending.fromJSON(value, key));
+      DataBase().getExpenses(DateTime.now()).then((list) {
+        if (list == null) return;
+        spendings = list;
+        spendings.sort((a, b) => b.date.compareTo(a.date));
       });
     } catch (e) {
       // print(e);
     }
-
-    spendings.sort((a, b) => b.date.compareTo(a.date));
   }
 
   Widget chart() {

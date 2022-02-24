@@ -1,6 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_gerenciador/utils/database.dart';
 
 import 'package:uni_gerenciador/utils/speding.dart';
 import 'package:uni_gerenciador/widgets/datepicker_widget.dart';
@@ -22,8 +22,6 @@ class AddSpendingState extends State<AddSpendingPage> {
 
   Spending spending =
       Spending(date: DateTime.now(), isIncome: false, value: 0, name: '');
-
-  DatabaseReference ref = FirebaseDatabase.instance.ref('spending');
 
   @override
   Widget build(BuildContext context) {
@@ -118,12 +116,9 @@ class AddSpendingState extends State<AddSpendingPage> {
                         if (_type == TypeSpending.ganho) {
                           spending.isIncome = true;
                         }
-                        ref
-                            .child('${spending.date.year}')
-                            .child('${spending.date.month}')
-                            .push()
-                            .set(spending.toJson())
-                            .then((value) => Navigator.of(context).pop());
+                        DataBase()
+                            .addExpense(spending)
+                            .then((val) => Navigator.of(context).pop());
                       }
                     },
                     child: const Text('Salvar')),
