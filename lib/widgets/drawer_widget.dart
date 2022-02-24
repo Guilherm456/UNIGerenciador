@@ -27,7 +27,7 @@ class DrawerMenuState extends State<DrawerMenu> {
             title: const Text("Página inicial"),
             onTap: () {
               Navigator.pop(context);
-              Navigator.of(context).popAndPushNamed('/');
+              Navigator.of(context).pushNamed('/');
             },
           ),
           const Divider(),
@@ -35,7 +35,7 @@ class DrawerMenuState extends State<DrawerMenu> {
             title: const Text('Tarefas'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.of(context).popAndPushNamed('/tasks');
+              Navigator.of(context).pushNamed('/tasks');
             },
           ),
           ListTile(

@@ -222,7 +222,9 @@ class HomePageState extends State<HomePage> {
                       children: const [
                         Icon(Icons.delete, color: Colors.white),
                         Text('Marcar como concluída',
-                            style: TextStyle(color: Colors.white)),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -234,9 +236,12 @@ class HomePageState extends State<HomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: const [
+                        Text(
+                          'Deletar tarefa',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                         Icon(Icons.delete, color: Colors.white),
-                        Text('Deletar tarefa',
-                            style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -293,7 +298,7 @@ class HomePageState extends State<HomePage> {
                     color: spending.isIncome ? Colors.green : Colors.red,
                   ),
                 ))
-            .toList(growable: false),
+            .toList(),
       );
     } else {
       return const Padding(

@@ -57,7 +57,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
     return FloatingActionButton(
       onPressed: () {
         animate();
-        Navigator.of(context).popAndPushNamed('/addtask');
+        Navigator.of(context).pushNamed('/addtask');
       },
       tooltip: 'Adicionar tarefa',
       heroTag: "task",
@@ -69,7 +69,7 @@ class FABState extends State<FAB> with SingleTickerProviderStateMixin {
     return FloatingActionButton(
       onPressed: () {
         animate();
-        Navigator.of(context).popAndPushNamed('/addspending');
+        Navigator.of(context).pushNamed('/addspending');
       },
       tooltip: 'Adicionar despesa',
       heroTag: "spending",

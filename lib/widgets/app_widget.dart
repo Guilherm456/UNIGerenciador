@@ -32,6 +32,9 @@ class AppWidget extends StatelessWidget {
           return MaterialApp(
             theme: ThemeData(
               primarySwatch: Paleta.colorDefault,
+              textTheme: const TextTheme(
+                labelLarge: TextStyle(color: Colors.grey),
+              ),
             ),
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.system,
