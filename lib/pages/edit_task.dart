@@ -124,7 +124,11 @@ class EditTaskPageState extends State<EditTaskPage> {
                     }
                     return null;
                   },
+                  autocorrect: true,
+                  enableSuggestions: true,
                   initialValue: task.name,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -136,6 +140,9 @@ class EditTaskPageState extends State<EditTaskPage> {
                   maxLines: 6,
                   maxLength: 250,
                   keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.next,
+                  autocorrect: true,
+                  enableSuggestions: true,
                 ),
                 DatePicker(
                     initialValue: task.date, onSaved: (val) => task.date = val),

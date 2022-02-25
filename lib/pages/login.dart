@@ -42,11 +42,13 @@ class LoginPageState extends State<LoginPage> {
                   child: Column(children: [
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'E-mail',
                         icon: Icon(Icons.email),
                       ),
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      autofillHints: const [AutofillHints.email],
                       enableSuggestions: true,
                       validator: (val) {
                         if (val == null) {
@@ -62,12 +64,13 @@ class LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 8),
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Senha',
                         icon: Icon(Icons.lock),
                       ),
                       controller: _passwordController,
-                      enableSuggestions: true,
                       obscureText: true,
+                      autofillHints: const [AutofillHints.password],
+                      textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.visiblePassword,
                       validator: (val) {
                         if (val == null) {

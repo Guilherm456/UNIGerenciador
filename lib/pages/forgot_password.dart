@@ -39,6 +39,8 @@ class ForgotPasswordState extends State<ForgotPasswordPage> {
                             ),
                             keyboardType: TextInputType.emailAddress,
                             controller: _emailController,
+                            autocorrect: true,
+                            enableSuggestions: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'E-mail inválido';

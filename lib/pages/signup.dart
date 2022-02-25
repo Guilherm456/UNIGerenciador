@@ -46,6 +46,10 @@ class SignUpPageState extends State<SignUpPage> {
                       textCapitalization: TextCapitalization.words,
                       keyboardType: TextInputType.name,
                       controller: _nameController,
+                      enableSuggestions: true,
+                      autocorrect: true,
+                      autofillHints: const [AutofillHints.name],
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Preencha o campo';
@@ -61,6 +65,10 @@ class SignUpPageState extends State<SignUpPage> {
                       ),
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      autocorrect: true,
+                      enableSuggestions: true,
+                      autofillHints: const [AutofillHints.email],
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Preencha o campo';
@@ -79,6 +87,8 @@ class SignUpPageState extends State<SignUpPage> {
                         icon: Icon(Icons.lock),
                       ),
                       controller: _passwordController,
+                      autofillHints: const [AutofillHints.newPassword],
+                      textInputAction: TextInputAction.next,
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -98,6 +108,8 @@ class SignUpPageState extends State<SignUpPage> {
                         icon: Icon(Icons.lock),
                       ),
                       obscureText: true,
+                      textInputAction: TextInputAction.next,
+                      autofillHints: const [AutofillHints.newPassword],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Preencha o campo';
@@ -114,6 +126,7 @@ class SignUpPageState extends State<SignUpPage> {
                         icon: Icon(Icons.monetization_on),
                       ),
                       keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
                       inputFormatters: [
                         CurrencyTextInputFormatter(
                             locale: 'pt_BR', symbol: 'R\$'),
