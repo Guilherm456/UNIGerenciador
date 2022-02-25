@@ -5,13 +5,14 @@ import 'package:uni_gerenciador/utils/speding.dart';
 import 'package:uni_gerenciador/utils/tasks.dart';
 
 class DataBase {
-  static final DatabaseReference ref =
-      FirebaseDatabase.instance.ref().keepSynced(true) as DatabaseReference;
+  static final DatabaseReference ref = FirebaseDatabase.instance.ref();
+  final Future<void> keep = ref.keepSynced(true);
 
   //Tarefas
   Future<List<Task>?> getTasks() async {
     List<Task> tasks = [];
     DatabaseReference refTask = ref.child('tasks');
+
     DatabaseEvent snap = await refTask.once();
 
     if (snap.snapshot.value == null) return null;

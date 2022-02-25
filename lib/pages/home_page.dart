@@ -1,13 +1,12 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:convert';
 import 'package:intl/intl.dart';
 
 import 'package:uni_gerenciador/pages/edit_task.dart';
+
 import 'package:uni_gerenciador/utils/database.dart';
 import 'package:uni_gerenciador/utils/speding.dart';
-
 import 'package:uni_gerenciador/utils/tasks.dart';
 
 import 'package:uni_gerenciador/widgets/fab_widget.dart';
@@ -28,7 +27,7 @@ class HomePageState extends State<HomePage> {
   Future<void> getTasks() async {
     try {
       if (tasks.isNotEmpty) return;
-      DataBase().getTasks().then((tasksBD) {
+      await DataBase().getTasks().then((tasksBD) {
         if (tasksBD == null) return;
         tasks = tasksBD;
       });
@@ -56,7 +55,7 @@ class HomePageState extends State<HomePage> {
     try {
       if (spendings.isNotEmpty) return;
 
-      DataBase().getExpenses(DateTime.now()).then((value) {
+      await DataBase().getExpenses(DateTime.now()).then((value) {
         if (value == null) return;
         spendings = value;
         spendings.sort((a, b) => a.date.compareTo(b.date));
@@ -71,18 +70,6 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    //Vai marcar a tarefa como feita no BD a partir da notificação
-    AwesomeNotifications()
-        .actionStream
-        .listen((ReceivedNotification notification) {
-      if (notification.payload == null) return;
-      if (notification.payload!.containsKey('taskId')) {
-        String? id = notification.payload!['taskId'];
-        if (id == null) return;
-        DataBase().editAttribute(id, "isDone", true);
-      }
-    });
 
     //Permite permissão para exibir notificações
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
