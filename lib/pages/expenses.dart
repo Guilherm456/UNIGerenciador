@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_gerenciador/utils/database.dart';
 import 'package:uni_gerenciador/utils/speding.dart';
+import 'package:uni_gerenciador/widgets/drawer_widget.dart';
 
 class ExpensesPage extends StatefulWidget {
   const ExpensesPage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class ExpensesPageState extends State<ExpensesPage> {
   Future<void> getExpenses() async {
     if (spendings.isNotEmpty) return;
     try {
-      DataBase().getExpenses(DateTime.now()).then((list) {
+      await DataBase().getExpenses(DateTime.now()).then((list) {
         if (list == null) return;
         spendings = list;
         spendings.sort((a, b) => b.date.compareTo(a.date));
@@ -34,14 +35,18 @@ class ExpensesPageState extends State<ExpensesPage> {
     List<SpendingCharts> transform(List<Spending> spendings) {
       List<SpendingCharts> spendingCharts = [];
       for (var spending in spendings) {
+        bool exist = false;
         for (int i = 0; i < spendingCharts.length; i++) {
           if (spendingCharts[i].day == spending.date.day) {
             spendingCharts[i].value += spending.value.toInt();
+            exist = true;
             break;
           }
         }
-        spendingCharts
-            .add(SpendingCharts(spending.date.day, spending.value.toInt()));
+        if (!exist) {
+          spendingCharts
+              .add(SpendingCharts(spending.date.day, spending.value.toInt()));
+        }
         continue;
       }
 
@@ -110,6 +115,7 @@ class ExpensesPageState extends State<ExpensesPage> {
           ),
         ],
       ),
+      drawer: const DrawerMenu(),
       body: SafeArea(
           child: SizedBox(
         width: MediaQuery.of(context).size.width,

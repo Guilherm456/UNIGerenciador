@@ -23,15 +23,13 @@ class HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Task> tasks = [];
   List<Spending> spendings = [];
+  String name = "Usuário";
 
   Future<void> getTasks() async {
     try {
       if (tasks.isNotEmpty) return;
-      await DataBase().getTasks().then((tasksBD) {
-        if (tasksBD == null) return;
-        tasks = tasksBD;
-      });
-
+      name = await DataBase().getName();
+      tasks = (await DataBase().getTasks())!;
       tasks.sort((a, b) => a.date.compareTo(b.date));
       tasks.sort((a, b) {
         if (a.isDone == true && b.isDone == false) {
@@ -43,11 +41,7 @@ class HomePageState extends State<HomePage> {
         }
       });
     } catch (e) {
-      const snackBar = SnackBar(
-        content: Text('Verifique sua internet!'),
-        behavior: SnackBarBehavior.floating,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // print(e);
     }
   }
 
@@ -127,7 +121,7 @@ class HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: Text("Olá, Guilherme!",
+                child: Text("Olá, $name!",
                     style: Theme.of(context).textTheme.headline4),
               ),
 
@@ -225,7 +219,7 @@ class HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                onDismissed: (direction) {
+                confirmDismiss: (direction) async {
                   //da esquerda para direita
                   if (direction == DismissDirection.startToEnd) {
                     DataBase().editAttribute(task.id, "isDone", true);
@@ -233,9 +227,11 @@ class HomePageState extends State<HomePage> {
                       tasks.firstWhere((element) => element == task).isDone =
                           true;
                     });
+                    return false;
                   }
                   //da direita para esquerda
                   else {
+                    bool deleted = false;
                     showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -245,12 +241,14 @@ class HomePageState extends State<HomePage> {
                               actions: [
                                 TextButton(
                                   child: const Text('Cancelar'),
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
                                 ),
                                 TextButton(
                                     onPressed: () {
                                       DataBase().deleteTask(task.id!);
-
+                                      deleted = true;
                                       setState(() {
                                         tasks.remove(task);
                                       });
@@ -260,6 +258,7 @@ class HomePageState extends State<HomePage> {
                                         style: TextStyle(color: Colors.red)))
                               ],
                             ));
+                    return deleted;
                   }
                 },
                 child: ListTile(
