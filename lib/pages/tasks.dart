@@ -98,7 +98,7 @@ class TaskState extends State<TaskPage> {
                                                 EditTaskPage(task: task)));
                                   }))
                               .toList()),
-                      Divider(),
+                      const Divider(),
                       Text(
                         "Com atraso",
                         style: Theme.of(context).textTheme.subtitle1,
@@ -113,7 +113,7 @@ class TaskState extends State<TaskPage> {
                                     title: Text(task.name),
                                   ))
                               .toList()),
-                      Divider(),
+                      const Divider(),
                       Text(
                         "Concluídas",
                         style: Theme.of(context).textTheme.subtitle1,
