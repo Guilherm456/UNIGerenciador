@@ -267,7 +267,7 @@ class HomePageState extends State<HomePage> {
                   trailing: const Icon(Icons.task_alt),
                   iconColor: (() {
                     if (task.isDone!) {
-                      return Colors.black38;
+                      return Colors.grey;
                     } else {
                       if (task.date.isBefore(DateTime.now())) {
                         return Colors.red;

@@ -80,54 +80,94 @@ class TaskState extends State<TaskPage> {
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.start,
                       ),
-                      ListView(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: tasks_aFazer
-                              .map((task) => ListTile(
-                                  title: Text(task.name),
-                                  subtitle: Text(formatador.format(task.date)),
-                                  trailing: const Icon(Icons.task_alt),
-                                  iconColor: Colors.black38,
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                EditTaskPage(task: task)));
-                                  }))
-                              .toList()),
+                      tasks_aFazer.isNotEmpty
+                          ? ListView(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              children: tasks_aFazer
+                                  .map((task) => ListTile(
+                                      title: Text(task.name),
+                                      subtitle:
+                                          Text(formatador.format(task.date)),
+                                      trailing: const Icon(Icons.task_alt),
+                                      iconColor: Colors.green,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditTaskPage(task: task)));
+                                      }))
+                                  .toList())
+                          : Center(
+                              child: Text("Nenhuma tarefa a fazer",
+                                  style:
+                                      Theme.of(context).textTheme.labelLarge)),
                       const Divider(),
                       Text(
                         "Com atraso",
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.start,
                       ),
-                      ListView(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: tasks_atrasadas
-                              .map((task) => ListTile(
-                                    title: Text(task.name),
-                                  ))
-                              .toList()),
+                      tasks_atrasadas.isNotEmpty
+                          ? ListView(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              children: tasks_atrasadas
+                                  .map((task) => ListTile(
+                                      title: Text(task.name),
+                                      subtitle:
+                                          Text(formatador.format(task.date)),
+                                      trailing: const Icon(Icons.task_alt),
+                                      iconColor: Colors.red,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditTaskPage(task: task)));
+                                      }))
+                                  .toList())
+                          : Center(
+                              child: Text("Nenhuma tarefa atrasada",
+                                  style:
+                                      Theme.of(context).textTheme.labelLarge)),
                       const Divider(),
                       Text(
                         "Concluídas",
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.start,
                       ),
-                      ListView(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: tasks_feitas
-                              .map((task) => ListTile(
-                                    title: Text(task.name),
-                                  ))
-                              .toList()),
+                      tasks_feitas.isNotEmpty
+                          ? ListView(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              children: tasks_feitas
+                                  .map((task) => ListTile(
+                                      title: Text(task.name),
+                                      subtitle:
+                                          Text(formatador.format(task.date)),
+                                      trailing: const Icon(Icons.task_alt),
+                                      iconColor: Colors.grey,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditTaskPage(task: task)));
+                                      }))
+                                  .toList())
+                          : Center(
+                              child: Text(
+                              "Nenhuma tarefa concluída",
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ))
                     ],
                   );
               }
