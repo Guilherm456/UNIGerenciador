@@ -42,6 +42,8 @@ class AddTaskPageState extends State<AddTaskPage> {
                     return null;
                   },
                   keyboardType: TextInputType.text,
+                  autocorrect: true,
+                  enableSuggestions: true,
                   autofocus: true,
                 ),
                 TextFormField(
@@ -53,6 +55,8 @@ class AddTaskPageState extends State<AddTaskPage> {
                   maxLines: 6,
                   maxLength: 250,
                   keyboardType: TextInputType.multiline,
+                  autocorrect: true,
+                  enableSuggestions: true,
                 ),
                 DatePicker(onSaved: (val) => task.date = val),
                 const SizedBox(height: 16.0),

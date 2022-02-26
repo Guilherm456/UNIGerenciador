@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:uni_gerenciador/pages/add_spending.dart';
 import 'package:uni_gerenciador/pages/add_task.dart';
 import 'package:uni_gerenciador/pages/expenses.dart';
+import 'package:uni_gerenciador/pages/forgot_password.dart';
 import 'package:uni_gerenciador/pages/home_page.dart';
+import 'package:uni_gerenciador/pages/login.dart';
+import 'package:uni_gerenciador/pages/signup.dart';
 import 'package:uni_gerenciador/pages/tasks.dart';
 
 class Paleta {
@@ -31,6 +34,7 @@ class AppWidget extends StatelessWidget {
         builder: (BuildContext context, Widget? child) {
           return MaterialApp(
             theme: ThemeData(
+              primaryColor: Paleta.colorDefault,
               primarySwatch: Paleta.colorDefault,
               textTheme: const TextTheme(
                 labelLarge: TextStyle(color: Colors.grey),
@@ -39,8 +43,11 @@ class AppWidget extends StatelessWidget {
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.system,
             title: 'Uni Gerenciador',
-            initialRoute: '/',
+            initialRoute: '/login',
             routes: {
+              '/login': (context) => const LoginPage(),
+              '/signup': (context) => const SignUpPage(),
+              '/forgot_password': (context) => const ForgotPasswordPage(),
               '/': (context) => const HomePage(),
               '/addtask': (context) => const AddTaskPage(),
               '/addspending': (context) => const AddSpendingPage(),

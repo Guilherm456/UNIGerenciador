@@ -73,6 +73,10 @@ class AddSpendingState extends State<AddSpendingPage> {
                     labelText: 'Nome do ${_type.name}',
                     icon: const Icon(Icons.sticky_note_2),
                   ),
+                  autocorrect: true,
+                  enableSuggestions: true,
+                  autofocus: true,
+                  textInputAction: TextInputAction.next,
                   validator: (String? value) {
                     if (value != null && value.isEmpty) {
                       return 'Nome é obrigatório';
@@ -93,6 +97,7 @@ class AddSpendingState extends State<AddSpendingPage> {
                     labelText: 'Valor do ${_type.name}',
                     icon: const Icon(Icons.monetization_on),
                   ),
+                  textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     CurrencyTextInputFormatter(locale: 'pt_BR', symbol: 'R\$'),
