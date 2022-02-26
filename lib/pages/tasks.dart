@@ -15,10 +15,7 @@ class TaskPage extends StatefulWidget {
 
 class TaskState extends State<TaskPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Task> tasks = [],
-      tasks_aFazer = [],
-      tasks_atrasadas = [],
-      tasks_feitas = [];
+  List<Task> tasks = [], tasksFazer = [], tasksAtrasadas = [], tasksFeitas = [];
   final teste = DateTime.now;
   DateFormat formatador = DateFormat('dd/MM/yyyy');
   Future<void> getData() async {
@@ -26,17 +23,17 @@ class TaskState extends State<TaskPage> {
       await DataBase().getTasks().then((value) {
         if (value == null) return;
         tasks = value;
-        tasks_aFazer = tasks
+        tasksFazer = tasks
             .where((task) =>
                 task.isDone == false && !task.date.isBefore(DateTime.now()))
             .toList();
-        tasks_atrasadas = tasks
+        tasksAtrasadas = tasks
             .where((task) =>
                 task.date.isBefore(DateTime.now()) && task.isDone == false)
             .toList();
-        tasks_feitas = tasks.where((task) => task.isDone == true).toList();
+        tasksFeitas = tasks.where((task) => task.isDone == true).toList();
       });
-    } catch (e) {}
+    } catch (e) {/*ignore*/}
   }
 
   @override
@@ -80,13 +77,13 @@ class TaskState extends State<TaskPage> {
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.start,
                       ),
-                      tasks_aFazer.isNotEmpty
+                      tasksFazer.isNotEmpty
                           ? ListView(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 16.0),
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              children: tasks_aFazer
+                              children: tasksFazer
                                   .map((task) => ListTile(
                                       title: Text(task.name),
                                       subtitle:
@@ -111,13 +108,13 @@ class TaskState extends State<TaskPage> {
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.start,
                       ),
-                      tasks_atrasadas.isNotEmpty
+                      tasksAtrasadas.isNotEmpty
                           ? ListView(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 16.0),
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              children: tasks_atrasadas
+                              children: tasksAtrasadas
                                   .map((task) => ListTile(
                                       title: Text(task.name),
                                       subtitle:
@@ -142,13 +139,13 @@ class TaskState extends State<TaskPage> {
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.start,
                       ),
-                      tasks_feitas.isNotEmpty
+                      tasksFeitas.isNotEmpty
                           ? ListView(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 16.0),
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              children: tasks_feitas
+                              children: tasksFeitas
                                   .map((task) => ListTile(
                                       title: Text(task.name),
                                       subtitle:

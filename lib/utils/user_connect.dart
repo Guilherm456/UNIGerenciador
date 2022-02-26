@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_gerenciador/utils/notification.dart';
 
 class UserConnect {
   //  final SharedPreferences prefs =  SharedPreferences.getInstance();
@@ -8,6 +9,9 @@ class UserConnect {
   void connect(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('idUser', user.uid);
+    if (await NotificationService().getNotifications() == 0) {
+      NotificationService().addAllTasks();
+    }
   }
 
   void disconnect() async {
@@ -16,6 +20,7 @@ class UserConnect {
     if (FirebaseAuth.instance.currentUser?.uid != null) {
       await FirebaseAuth.instance.signOut();
     }
+    await NotificationService().cancelAllNotifications();
   }
 
   Future<String?> connectUser(String email, String password) async {
@@ -34,6 +39,8 @@ class UserConnect {
           return 'Senha incorreta';
         case 'invalid-email':
           return 'Email inválido';
+        case 'network-request-failed':
+          return 'Sem conexão com a internet';
         default:
           return e.code;
       }
@@ -62,6 +69,8 @@ class UserConnect {
           return 'Email inválido';
         case 'invalid-password':
           return 'Senha inválida';
+        case 'network-request-failed':
+          return 'Sem conexão com a internet';
         default:
           return e.code;
       }
@@ -73,11 +82,15 @@ class UserConnect {
   }
 
   Future<String?> actualUser() async {
-    String? user = FirebaseAuth.instance.currentUser?.uid;
-    if (user == null) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      user = prefs.getString('idUser');
+    try {
+      String? user = FirebaseAuth.instance.currentUser?.uid;
+      if (user == null) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        user = prefs.getString('idUser');
+      }
+      return user;
+    } catch (e) {
+      return null;
     }
-    return user;
   }
 }
