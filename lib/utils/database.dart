@@ -8,6 +8,10 @@ import 'package:uni_gerenciador/utils/user_connect.dart';
 
 class DataBase {
   FirebaseDatabase database = FirebaseDatabase.instance;
+  DataBase() {
+    database.setPersistenceEnabled(true);
+    database.setPersistenceCacheSizeBytes(10000000);
+  }
 
   Future<DatabaseReference> getRef() async {
     String? user = await UserConnect().actualUser();
@@ -20,21 +24,18 @@ class DataBase {
   //Tarefas
   Future<List<Task>?> getTasks() async {
     List<Task> tasks = [];
-    try {
-      DatabaseReference ref = await getRef();
-      DatabaseReference refTask = ref.child('tasks');
 
-      DatabaseEvent snap = await refTask.once();
-      if (snap.snapshot.value == null) return null;
-      Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
+    DatabaseReference ref = await getRef();
+    DatabaseReference refTask = ref.child('tasks');
 
-      data.forEach((key, value) {
-        tasks.add(Task.fromJSON(value, key));
-      });
-      return tasks;
-    } catch (e) {
-      return [];
-    }
+    DatabaseEvent snap = await refTask.once();
+    if (snap.snapshot.value == null) return null;
+    Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
+
+    data.forEach((key, value) {
+      tasks.add(Task.fromJSON(value, key));
+    });
+    return tasks;
   }
 
   Future<void> addTask(Task task) async {
@@ -93,23 +94,19 @@ class DataBase {
   Future<List<Spending>?> getExpenses(DateTime date) async {
     List<Spending> expenses = [];
 
-    try {
-      DatabaseReference ref = await getRef();
-      DatabaseReference refSpending =
-          ref.child('spending').child('${date.year}').child("${date.month}");
+    DatabaseReference ref = await getRef();
+    DatabaseReference refSpending =
+        ref.child('spending').child('${date.year}').child("${date.month}");
 
-      DatabaseEvent snap = await refSpending.once();
+    DatabaseEvent snap = await refSpending.once();
 
-      if (snap.snapshot.value == null) return null;
-      Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
+    if (snap.snapshot.value == null) return null;
+    Map<String, dynamic> data = jsonDecode(jsonEncode(snap.snapshot.value));
 
-      data.forEach((key, value) {
-        expenses.add(Spending.fromJSON(value, key));
-      });
-      return expenses;
-    } catch (e) {
-      return [];
-    }
+    data.forEach((key, value) {
+      expenses.add(Spending.fromJSON(value, key));
+    });
+    return expenses;
   }
 
   Future<void> addExpense(Spending expense) async {

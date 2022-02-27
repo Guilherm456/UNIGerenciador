@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.uni_gerenciador">
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+
    <application
-        android:label="uni_gerenciador"
+        android:label="Uni Gerenciador"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
